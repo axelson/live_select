@@ -7,7 +7,7 @@
 Dynamic (multi)selection field for LiveView.
 
 `LiveSelect` is a LiveView component that implements a dynamic selection field with a dropdown. The content of the
-dropdown is filled by your LiveView as the user types. This allows you to easily create an 
+dropdown is filled by your LiveView as the user types. This allows you to easily create an
 interface for search-like functionalities with type-ahead. `LiveSelect`s features include:
 
 * Single as well as multiple selection
@@ -31,7 +31,7 @@ _Template:_
 
 ```elixir
   <.form for={@form} phx-change="change">
-    <.live_select field={@form[:city_search]} /> 
+    <.live_select field={@form[:city_search]} />
   </.form>
 ```
 
@@ -45,16 +45,16 @@ _In the LiveView or LiveComponent that's the target of your form events:_
 
   ```elixir
   @impl true
-  def handle_event("live_select_change", %{"text" => text, "id" => live_select_id}, socket) do 
+  def handle_event("live_select_change", %{"text" => text, "id" => live_select_id}, socket) do
     cities = City.search(text)
-    # cities = [ 
-    # {"New York City", [-74.00597,40.71427]}, 
-    # {"New Kingston", [-76.78319,18.00747]}, 
-    # ... 
+    # cities = [
+    # {"New York City", [-74.00597,40.71427]},
+    # {"New Kingston", [-76.78319,18.00747]},
+    # ...
     # ]
 
     send_update(LiveSelect.Component, id: live_select_id, options: cities)
-    
+
     {:noreply, socket}
   end
 
@@ -67,7 +67,7 @@ _In the LiveView or LiveComponent that's the target of your form events:_
     IO.puts("You selected city #{city_name} located at: #{city_coords}")
 
     {:noreply, socket}
-  end  
+  end
   ```
 
 Refer to the [module documentation](https://hexdocs.pm/live_select/LiveSelect.html) for the details, and
@@ -83,31 +83,13 @@ To install, add this to your dependencies:
 ]
 ```
 
-## Javascript hooks 🪝
+### Javascript hooks 🪝
 
 `LiveSelect` relies on Javascript hooks to work. You need to add `LiveSelect`'s hooks to your live socket.
 `LiveSelect` distributes its Javascript code (a single file) in the same way as LiveView, by including an
 npm package as part of its hex package.
 
-To include `LiveSelect`'s hooks, add this to your `app.js` file:
-
-```javascript
-import live_select from "live_select"
-
-// if you don't have any other hooks:
-let liveSocket = new LiveSocket("/live", Socket, {params: {_csrf_token: csrfToken}, hooks: live_select})
-
-// if you have other hooks:
-const hooks = {
-    MyHook: {
-        // ...
-    },
-    ...live_select
-}
-let liveSocket = new LiveSocket("/live", Socket, {params: {_csrf_token: csrfToken}, hooks})
-```
-
-### If you're using Webpack or another NPM-based builder
+#### If you're using Webpack or another NPM-based builder
 
 If you're using an npm-based builder such as Webpack, you will need to add `LiveSelect` to the list of your dependencies in your `package.json` (just as you did with LiveView):
 
@@ -124,6 +106,26 @@ If you're using an npm-based builder such as Webpack, you will need to add `Live
 
 And then run `npm install` from your `assets` folder. You will also need to run `npm install --force live_select`
 whenever you update the `LiveSelect` hex package in order to get the latest JS code.
+
+#### Adding the hooks
+
+To include `LiveSelect`'s hooks, add this to your `app.js` file:
+
+```javascript
+import live_select from "live_select"
+
+// if you don't have any other hooks:
+let liveSocket = new LiveSocket("/live", Socket, {params: {_csrf_token: csrfToken}, hooks: live_select})
+
+// if you have other hooks:
+const hooks = {
+  MyHook: {
+      // ...
+  },
+  ...live_select
+}
+let liveSocket = new LiveSocket("/live", Socket, {params: {_csrf_token: csrfToken}, hooks: hooks})
+```
 
 ## Styling 🎨
 
@@ -142,18 +144,18 @@ your `tailwind.config.js`:
 
 ```javascript
 module.exports = {
-    content: [
-        //...
-        '../deps/live_select/lib/live_select/component.*ex', // <-- for a standalone app
-        '../../../deps/live_select/lib/live_select/component.*ex' // <-- for an umbrella app
-    ]
-    //..
+  content: [
+    //...
+    '../deps/live_select/lib/live_select/component.*ex', // <-- for a standalone app
+    '../../../deps/live_select/lib/live_select/component.*ex' // <-- for an umbrella app
+  ]
+  //..
 }
 ```
 
 Notice the different paths for a standalone or umbrella app.
 
-Refer to the [Styling section](https://hexdocs.pm/live_select/styling.html) for further details.
+Refer to the [Styling docs](https://hexdocs.pm/live_select/styling.html) for further details.
 
 ## Showcase app 🎪
 
@@ -164,6 +166,7 @@ The showcase app is available [here](https://live-select.fly.dev/).
 To start the showcase app locally, simply run:
 
 ```
+npm install -g yarn
 mix setup
 PORT=4001 mix phx.server
 ```
@@ -175,14 +178,14 @@ of the callback that your LiveView needs to implement in order to handle the eve
 
 ## Contribute 🤝
 
-Contributions are very welcome! However, if you want do add a new feature please discuss it first by creating an issue so we can all agree that it's needed. 
+Contributions are very welcome! However, if you want do add a new feature please discuss it first by creating an issue so we can all agree that it's needed.
 Also, it's important to add a test that covers it. If you don't know how to write the test or need guidance,
 I'm happy to help.
 
 Use `mix test` to run the entire test suite, which is subdivided into 3 main files:
 
 * `test/live_select/component_test.exs` - everything that can be tested by rendering the component statically
-* `test/live_select_test.exs` - tests for `single` mode that require a running LiveView 
+* `test/live_select_test.exs` - tests for `single` mode that require a running LiveView
 * `test/live_select_tags_test.exs` - tests for `tags` mode that require a running LiveView
 
 Tests that require a LiveView use the showcase app as the parent LiveView.
@@ -200,4 +203,4 @@ Tests that require a LiveView use the showcase app as the parent LiveView.
 - [X] Expose as function component (and drop LV 0.17 support)
 - [X] Add cheatsheet
 - [ ] Add section to document testing strategies
-- [ ] Additional multiple selection mode 
+- [ ] Additional multiple selection mode
